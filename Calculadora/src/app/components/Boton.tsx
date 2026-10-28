@@ -1,49 +1,60 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import React from 'react';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import CustomText from './CustomText';
 
 interface BotonProps {
     label: string;
     backgroundColor?: string;
     textColor?: string;
     onPress?: () => void;
-    doubleSize?: boolean; // Prop opcional para el botón 0
+    doubleSize?: boolean;
 }
 
-export default function CalculatorButton({ 
+// ⚠️ Asegúrate de que tenga el 'export default'
+export default function Boton({ 
   label, 
   onPress, 
-  backgroundColor = '#333333', 
-  textColor = '#FFFFFF',
+  backgroundColor = '#FFFFFF',
+  textColor = '#35213F',
   doubleSize = false
 }: BotonProps) {
+  const handlePress = () => {
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onPress?.();
+  };
+
   return (
     <TouchableOpacity 
       style={[
         styles.button, 
         { backgroundColor },
-        doubleSize && styles.doubleButton // Si es true, duplica su ancho en la fila
+        doubleSize && styles.doubleButton
       ]} 
-      onPress={onPress}
+      onPress={handlePress}
     >
-      <Text style={[styles.text, { color: textColor }]}>{label}</Text>
+      <CustomText style={[styles.text, { color: textColor }]}>{label}</CustomText>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    flex: 1,                    // Se distribuye equitativamente en la fila
-    height: 70,                 // Altura rectangular
+    flex: 1,
+    height: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 12,           // Esquinas redondeadas
-    margin: 6,                  // Separación entre botones
+    borderRadius: 12,
+    margin: 6,
+    shadowColor: '#4B3563',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.16,
+    shadowRadius: 4,
+    elevation: 3,
   },
   doubleButton: {
-    flex: 2,                    // Ocupa el doble de espacio (ideal para el 0)
+    flex: 2,
   },
   text: {
     fontSize: 24,
-    fontFamily: 'WorkSans-Light',
   },
 });
